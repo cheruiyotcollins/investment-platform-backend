@@ -13,9 +13,8 @@ public class CorsConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**") // Allow all endpoints
-                        .allowedOrigins("http://localhost:3000") // Frontend URL
-                        .allowedOrigins("https://www.cryptoinvestment.live", "https://api/cryptoinvestment.live")
+                registry.addMapping("/**")
+                        .allowedOrigins("https://www.cryptoinvestment.live", "https://api/cryptoinvestment.live","https://cryptoinvest-live.netlify.app","http://localhost:3000")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true); // Important if using Cookies/Sessions
