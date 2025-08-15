@@ -38,7 +38,7 @@ app:
       max-attempts: ${EMAIL_RETRY_MAX_ATTEMPTS:3}
       delay-hours: ${EMAIL_RETRY_DELAY_HOURS:1}
   jwt:
-    secret: ${JWT_SECRET:default-secret}
+    secret: ${JWT_SECRET:CvsHphcFevtdY3HnphT7gUvnIgDin5hlQG+9O1cCD7vhGEltf+QsEasz1n91kqFCf8vkB4RDnf5nAfblMR+CgA==}
     token-validity: ${JWT_TOKEN_VALIDITY:3600000}
     refresh-token-validity: ${JWT_REFRESH_TOKEN_VALIDITY:2592000000}
 
