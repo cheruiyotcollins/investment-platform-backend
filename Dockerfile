@@ -1,0 +1,26 @@
+# Stage 1: Build the application with Maven and JDK 21
+FROM maven:3.9.9-eclipse-temurin-21 AS build
+WORKDIR /app
+
+# First copy just the POM to cache dependencies
+COPY pom.xml .
+RUN mvn dependency:go-offline
+
+# Then copy source code and build
+COPY src ./src
+RUN mvn clean package -DskipTests
+
+# Stage 2: Runtime image with JRE only (Java 21)
+FROM eclipse-temurin:21-jre-jammy
+WORKDIR /app
+
+COPY --from=build /app/target/backend-0.0.1-SNAPSHOT.jar app.jar
+EXPOSE 9001
+
+ENV TZ=UTC
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+RUN useradd -m myuser && chown -R myuser:myuser /app
+USER myuser
+
+ENTRYPOINT ["java", "-jar", "app.jar"]
