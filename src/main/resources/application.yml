@@ -1,12 +1,11 @@
 server:
-  port: 9001
-
+  port: ${SERVER_PORT:9001} # Default to 9001 if not set
 
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/investment_schema?useSSL=false&allowPublicKeyRetrieval=true
-    username: collo
-    password: Kipkirui92?
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/investment_schema?useSSL=false&allowPublicKeyRetrieval=true}
+    username: ${SPRING_DATASOURCE_USERNAME:collo}
+    password: ${SPRING_DATASOURCE_PASSWORD:Kipkirui92?}
     initialization-mode: always
   servlet:
     multipart:
@@ -24,7 +23,7 @@ spring:
       fail-on-empty-beans: false
 
 password:
-  length: 8
+  length: ${PASSWORD_LENGTH:8}
 
 logging:
   level:
@@ -33,14 +32,15 @@ logging:
       hibernate.SQL: DEBUG
 
 app:
-  base-url: http://localhost:9001
+  base-url: ${APP_BASE_URL:http://localhost:9001}
   email:
     retry:
-      max-attempts: 3
-      delay-hours: 1
+      max-attempts: ${EMAIL_RETRY_MAX_ATTEMPTS:3}
+      delay-hours: ${EMAIL_RETRY_DELAY_HOURS:1}
   jwt:
-    secret: CvsHphcFevtdY3HnphT7gUvnIgDin5hlQG+9O1cCD7vhGEltf+QsEasz1n91kqFCf8vkB4RDnf5nAfblMR+CgA==
-    token-validity: 3600000
-    refresh-token-validity: 2592000000
+    secret: ${JWT_SECRET:default-secret}
+    token-validity: ${JWT_TOKEN_VALIDITY:3600000}
+    refresh-token-validity: ${JWT_REFRESH_TOKEN_VALIDITY:2592000000}
+
 file:
-  upload-dir: uploads/deposit-screenshots
+  upload-dir: ${FILE_UPLOAD_DIR:uploads/deposit-screenshots}
