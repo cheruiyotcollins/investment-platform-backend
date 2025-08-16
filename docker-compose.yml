@@ -6,7 +6,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: spring-boot-app
+    container_name: investment-backend
     ports:
       - "9001:9001"
     env_file:
