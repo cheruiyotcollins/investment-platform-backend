@@ -240,15 +240,24 @@ public class UserController {
 
 
 
-    @GetMapping("/{userId}/wallets")
-    public ResponseEntity<?> getDepositWallets(@PathVariable Long userId) {
-        // In a real app, these would be your platform's wallet addresses
-        return ResponseEntity.ok(Map.of(
-                "btcAddress", "bc1qz4puhlmr8ewsj7h4gwdgzdafdznd299ky8j0mf",
-                "ethAddress", "0x1ff1d59A88E06d527148c53476DB72c0b3378cd6",
-                "usdtAddress", "0x1ff1d59A88E06d527148c53476DB72c0b3378cd6" // USDT contract address
-        ));
-    }
+//    @GetMapping("/{userId}/wallets")
+//    public ResponseEntity<?> getDepositWallets(@PathVariable Long userId) {
+//        // In a real app, these would be your platform's wallet addresses
+//        return ResponseEntity.ok(Map.of(
+//                "btcAddress", "bc1qz4puhlmr8ewsj7h4gwdgzdafdznd299ky8j0mf",
+//                "ethAddress", "0x1ff1d59A88E06d527148c53476DB72c0b3378cd6",
+//                "usdtAddress", "0x1ff1d59A88E06d527148c53476DB72c0b3378cd6" // USDT contract address
+//        ));
+//    }
+@GetMapping("/{userId}/wallets")
+public ResponseEntity<?> getDepositWallets(@PathVariable Long userId) {
+    // In a real app, these would be your platform's wallet addresses
+    return ResponseEntity.ok(Map.of(
+            "btcAddress", "bc1quq3slrxtptqas6cu25cxxuswqwhgknj2a8y8hd",
+            "ethAddress", "0x826B7F1C10c0d0a27B5A0C38034C0a116479a3bf",
+            "usdtAddress", "0x1ff1d59A88E06d527148c53476DB72c0b3378cd6" // USDT contract address
+    ));
+}
 
     private boolean validateWalletAddress(String currency, String address) {
         switch (currency) {
