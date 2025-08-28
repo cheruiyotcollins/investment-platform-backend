@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile
       build_context: "."
     ports:
-      - port: http   # ✅ just declare HTTP, don’t hardcode 8000
+      - port: http
     env:
       - name: SPRING_DATASOURCE_URL
         value: jdbc:postgresql://ep-steep-boat-a2v508jg.eu-central-1.pg.koyeb.app:5432/koyebdb?sslmode=require
