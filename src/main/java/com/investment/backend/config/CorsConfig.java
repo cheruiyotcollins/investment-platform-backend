@@ -14,10 +14,16 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("https://www.cryptoinvestment.live", "https://api/cryptoinvestment.live","https://cryptoinvest-live.netlify.app","http://localhost:3000")
+                        .allowedOrigins(
+                                "https://www.cryptoinvestment.live",
+                                "https://api.cryptoinvestment.live", // fixed typo: was api/cryptoinvestment.live
+                                "https://cryptoinvest-live.netlify.app",
+                                "http://localhost:3000",
+                                "https://electronic-rhonda-cryptoinvest-fbca724e.koyeb.app" // add Koyeb domain
+                        )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
-                        .allowCredentials(true); // Important if using Cookies/Sessions
+                        .allowCredentials(true);
             }
         };
     }
