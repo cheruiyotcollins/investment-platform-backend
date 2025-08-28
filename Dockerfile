@@ -12,9 +12,9 @@ WORKDIR /app
 
 # Correct the JAR filename
 COPY --from=build /app/target/backend-0.0.1-SNAPSHOT.jar app.jar
-EXPOSE 8080
+EXPOSE 8000
 ENV TZ=UTC
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN useradd -m myuser && chown -R myuser:myuser /app
 USER myuser
-ENTRYPOINT ["java", "-jar", "app.jar", "--server.port=8080"]
+ENTRYPOINT ["java", "-jar", "app.jar", "--server.port=8000"]

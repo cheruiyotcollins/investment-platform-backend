@@ -6,7 +6,7 @@ services:
       # Add the following line to specify the build context
       build_context: "."
     ports:
-      - port: 8080
+      - port: 8000
         protocol: http
     env:
       - name: SPRING_DATASOURCE_URL
