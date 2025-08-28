@@ -62,7 +62,12 @@ management:
   endpoints:
     web:
       exposure:
-        include: health
+        include: health,info,metrics
+      base-path: /actuator  # Explicitly set base path
   endpoint:
     health:
       show-details: always
+      probes:
+        enabled: true
+    shutdown:
+      enabled: false
