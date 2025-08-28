@@ -1,5 +1,6 @@
 server:
-  port: ${PORT:8000} # Koyeb injects PORT automatically
+  port: ${PORT:8000}
+  address: 0.0.0.0
 
 spring:
   datasource:
