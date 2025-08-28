@@ -2,7 +2,7 @@ name: investment-backend
 services:
   - name: app
     ports:
-      - port: 8000
+      - port: 8080
         protocol: http
     env:
       - name: SPRING_DATASOURCE_URL
@@ -15,5 +15,9 @@ services:
         value: /app/uploads
       - name: JWT_SECRET
         value: CvsHphcFevtdY3HnphT7gUvnIgDin5hlQG+9O1cCD7vhGEltf+QsEasz1n91kqFCf8vkB4RDnf5nAfblMR+CgA==
+      - name: APP_BASE_URL
+        value: https://electronic-rhonda-cryptoinvest-fbca724e.koyeb.app
+      - name: PORT
+        value: "8080" # Note: The port must be a string in this new format.
     docker:
       dockerfile: Dockerfile
