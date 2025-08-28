@@ -35,13 +35,16 @@ spring:
 password:
   length: ${PASSWORD_LENGTH:8}
 
-# Logging
+# Logging - ENHANCED FOR DEBUGGING
 logging:
   level:
     root: INFO
-    org.hibernate.SQL: ${LOG_LEVEL_SQL:DEBUG}
+    org.springframework: DEBUG
+    com.zaxxer.hikari: DEBUG
+    com.investment: DEBUG
+    org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-    com.yourpackage: ${LOG_LEVEL_APP:DEBUG}
+    org.hibernate.orm.jdbc.bind: TRACE
 
 # Application custom properties
 app:
@@ -58,12 +61,14 @@ app:
 # File storage
 file:
   upload-dir: ${FILE_UPLOAD_DIR:uploads/deposit-screenshots}
+
+# Actuator for health checks
 management:
   endpoints:
     web:
       exposure:
         include: health,info,metrics
-      base-path: /actuator  # Explicitly set base path
+      base-path: /actuator
   endpoint:
     health:
       show-details: always
