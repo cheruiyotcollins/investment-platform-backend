@@ -58,3 +58,11 @@ app:
 # File storage
 file:
   upload-dir: ${FILE_UPLOAD_DIR:uploads/deposit-screenshots}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
