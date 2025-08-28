@@ -1,5 +1,5 @@
 server:
-  port: ${PORT:9001} # Use PORT as the environment variable for Koyeb
+  port: ${PORT:9001} # Port (Koyeb injects PORT automatically)
 
 spring:
   datasource:
@@ -8,7 +8,7 @@ spring:
     password: ${SPRING_DATASOURCE_PASSWORD:password}
     driver-class-name: org.postgresql.Driver
     hikari:
-      ssl-mode: require
+      maximum-pool-size: ${SPRING_DATASOURCE_POOL_SIZE:10}
   jpa:
     hibernate:
       ddl-auto: update
@@ -22,17 +22,18 @@ spring:
     serialization:
       fail-on-empty-beans: false
 
+# Password policy
 password:
   length: ${PASSWORD_LENGTH:8}
 
+# Logging
 logging:
   level:
-    org:
-      hibernate: DEBUG
-      hibernate.SQL: DEBUG
-    com:
-      yourpackage: DEBUG
+    org.hibernate: DEBUG
+    org.hibernate.SQL: DEBUG
+    com.yourpackage: DEBUG
 
+# Application custom properties
 app:
   base-url: ${APP_BASE_URL:http://localhost:9001}
   email:
@@ -41,8 +42,9 @@ app:
       delay-hours: ${EMAIL_RETRY_DELAY_HOURS:1}
   jwt:
     secret: ${JWT_SECRET:CvsHphcFevtdY3HnphT7gUvnIgDin5hlQG+9O1cCD7vhGEltf+QsEasz1n91kqFCf8vkB4RDnf5nAfblMR+CgA==}
-    token-validity: ${JWT_TOKEN_VALIDITY:3600000}
-    refresh-token-validity: ${JWT_REFRESH_TOKEN_VALIDITY:2592000000}
+    token-validity: ${JWT_TOKEN_VALIDITY:3600000}          # 1 hour
+    refresh-token-validity: ${JWT_REFRESH_TOKEN_VALIDITY:2592000000} # 30 days
 
+# File storage
 file:
   upload-dir: ${FILE_UPLOAD_DIR:uploads/deposit-screenshots}
