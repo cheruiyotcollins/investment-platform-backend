@@ -22,4 +22,4 @@ services:
       - name: APP_BASE_URL
         value: https://electronic-rhonda-cryptoinvest-fbca724e.koyeb.app
       - name: PORT
-        value: "8080"
+        value: "8000"
