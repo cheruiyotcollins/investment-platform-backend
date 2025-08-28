@@ -1,24 +1,45 @@
-package com.investment.backend.config;
+services:
+  app:
+    depends_on:
+      db:
+        condition: service_healthy
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: investment-backend
+    ports:
+      - "9001:9001"
+    env_file:
+      - ./.env
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/investment_schema?useSSL=false
+      - FILE_UPLOAD_DIR=/app/uploads
+    volumes:
+      - ./uploads:/app/uploads
+    networks:
+      - app-network
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+  db:
+    image: mysql:8.0
+    container_name: mysql-db
+    env_file:
+      - ./.env
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+    networks:
+      - app-network
+    command: --default-authentication-plugin=mysql_native_password
 
-@Configuration
-public class CorsConfig {
+volumes:
+  mysql_data:
 
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")
-                        .allowedOrigins("https://www.cryptoinvestment.live", "https://api/cryptoinvestment.live","https://cryptoinvest-live.netlify.app","http://localhost:3000")
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                        .allowedHeaders("*")
-                        .allowCredentials(true); // Important if using Cookies/Sessions
-            }
-        };
-    }
-}
+networks:
+  app-network:
+    driver: bridge
