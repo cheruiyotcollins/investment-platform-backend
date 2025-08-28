@@ -1,23 +1,18 @@
 server:
-  port: ${SERVER_PORT:9001} # Default to 9001 if not set
+  port: ${PORT:9001} # Use PORT as the environment variable for Koyeb
 
 spring:
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/investment_schema?useSSL=false&allowPublicKeyRetrieval=true}
-    username: ${SPRING_DATASOURCE_USERNAME:collo}
-    password: ${SPRING_DATASOURCE_PASSWORD:Kipkirui92?}
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     initialization-mode: always
-  servlet:
-    multipart:
-      max-file-size: 5MB
-      max-request-size: 5MB
-
   jpa:
     hibernate:
       ddl-auto: update
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect
+        dialect: org.hibernate.dialect.PostgreSQLDialect
   jackson:
     serialization:
       fail-on-empty-beans: false

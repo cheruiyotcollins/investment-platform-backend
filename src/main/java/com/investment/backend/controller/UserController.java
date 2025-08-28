@@ -263,7 +263,7 @@ public class UserController {
     public ResponseEntity<?> getDepositWallets(@PathVariable Long userId) {
         // In a real app, these would be your platform's wallet addresses
         return ResponseEntity.ok(Map.of(
-                "btcAddress", "bc1q7smxgycmu3h525yyzg5krwjk8rmmlvd87u0x6yfhs7y2zcfpsgsqpeucgp",
+                "btcAddress", "38n5Y6cepPWDrJxL66QTJ8H9SAQnRvTbRW",
                 "ethAddress", "0x402d702105a430436131815d7f42f1aa7a48b5f9",
                 "usdtAddress", "TAjBNdfX82ZukCyG8jiLo1JyP24xmGs9PK"
         ));

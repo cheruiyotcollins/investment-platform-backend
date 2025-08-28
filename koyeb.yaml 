@@ -1,0 +1,19 @@
+name: investment-backend
+services:
+  - name: app
+    ports:
+      - port: 9001
+        protocol: http
+    env:
+      - name: SPRING_DATASOURCE_URL
+        value: jdbc:postgresql://ep-steep-boat-a2v508jg.eu-central-1.pg.koyeb.app:5432/koyebdb?sslmode=require
+      - name: SPRING_DATASOURCE_USERNAME
+        value: koyeb-adm
+      - name: SPRING_DATASOURCE_PASSWORD
+        value: npg_vxiQ9bCs2LOE
+      - name: FILE_UPLOAD_DIR
+        value: /app/uploads
+      - name: JWT_SECRET
+        value: CvsHphcFevtdY3HnphT7gUvnIgDin5hlQG+9O1cCD7vhGEltf+QsEasz1n91kqFCf8vkB4RDnf5nAfblMR+CgA==
+    docker:
+      dockerfile: Dockerfile
