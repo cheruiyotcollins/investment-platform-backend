@@ -17,4 +17,4 @@ ENV TZ=UTC
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN useradd -m myuser && chown -R myuser:myuser /app
 USER myuser
-ENTRYPOINT ["java", "-jar", "app.jar", "--server.port=8000"]
+ENTRYPOINT ["java", "-jar", "app.jar", "--server.port=${PORT}"]
