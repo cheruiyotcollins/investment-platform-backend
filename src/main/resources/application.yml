@@ -1,5 +1,5 @@
 server:
-  port: ${PORT:9001} # Port (Koyeb injects PORT automatically)
+  port: ${PORT:9001} # Koyeb injects PORT automatically
 
 spring:
   datasource:
@@ -9,15 +9,23 @@ spring:
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: ${SPRING_DATASOURCE_POOL_SIZE:10}
+      minimum-idle: ${SPRING_DATASOURCE_MIN_IDLE:2}
+      idle-timeout: ${SPRING_DATASOURCE_IDLE_TIMEOUT:30000}
+      max-lifetime: ${SPRING_DATASOURCE_MAX_LIFETIME:1800000}
+      connection-timeout: ${SPRING_DATASOURCE_CONNECTION_TIMEOUT:30000}
+
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update} # update / validate / none
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         jdbc:
           lob:
             non_contextual_creation: true
+    open-in-view: false
+    show-sql: ${SPRING_JPA_SHOW_SQL:false}
+
   jackson:
     serialization:
       fail-on-empty-beans: false
@@ -29,9 +37,10 @@ password:
 # Logging
 logging:
   level:
-    org.hibernate: DEBUG
-    org.hibernate.SQL: DEBUG
-    com.yourpackage: DEBUG
+    root: INFO
+    org.hibernate.SQL: ${LOG_LEVEL_SQL:DEBUG}
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    com.yourpackage: ${LOG_LEVEL_APP:DEBUG}
 
 # Application custom properties
 app:
@@ -42,7 +51,7 @@ app:
       delay-hours: ${EMAIL_RETRY_DELAY_HOURS:1}
   jwt:
     secret: ${JWT_SECRET:CvsHphcFevtdY3HnphT7gUvnIgDin5hlQG+9O1cCD7vhGEltf+QsEasz1n91kqFCf8vkB4RDnf5nAfblMR+CgA==}
-    token-validity: ${JWT_TOKEN_VALIDITY:3600000}          # 1 hour
+    token-validity: ${JWT_TOKEN_VALIDITY:3600000}             # 1 hour
     refresh-token-validity: ${JWT_REFRESH_TOKEN_VALIDITY:2592000000} # 30 days
 
 # File storage
