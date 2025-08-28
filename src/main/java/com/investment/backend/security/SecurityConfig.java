@@ -22,6 +22,9 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/users/register").permitAll()
                         .requestMatchers("/api/users/login").permitAll()
+                        .requestMatchers("/actuator/health", "/health", "/").permitAll()
+                        // Allow public access to registration and login
+                        .requestMatchers("/api/auth/register", "/api/auth/login").permitAll()
                         // Permit all preflight OPTIONS requests
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .anyRequest().authenticated()
