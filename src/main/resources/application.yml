@@ -1,12 +1,12 @@
 server:
-  port: 8000
+  port: ${PORT}
   address: 0.0.0.0
 
 spring:
   datasource:
-    url: jdbc:postgresql://ep-steep-boat-a2v508jg.eu-central-1.pg.koyeb.app:5432/koyebdb?sslmode=require
-    username: koyeb-adm
-    password: npg_vxiQ9bCs2LOE
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 10
