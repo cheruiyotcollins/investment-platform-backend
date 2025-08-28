@@ -2,7 +2,7 @@ name: investment-backend
 services:
   - name: app
     ports:
-      - port: 9001
+      - port: 8000
         protocol: http
     env:
       - name: SPRING_DATASOURCE_URL
