@@ -19,7 +19,7 @@ public class CorsConfig {
                                 "https://api.cryptoinvestment.live", // fixed typo: was api/cryptoinvestment.live
                                 "https://cryptoinvest-live.netlify.app",
                                 "http://localhost:3000",
-                                "https://electronic-rhonda-cryptoinvest-fbca724e.koyeb.app" // add Koyeb domain
+                                "https://likely-rhianon-cryptoinvest-ba86ef09.koyeb.app/" // add Koyeb domain
                         )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
