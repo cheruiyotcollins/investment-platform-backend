@@ -1,5 +1,5 @@
 server:
-  port: ${PORT:8080}
+  port: ${PORT:8000}
   address: 0.0.0.0
 
 spring:
@@ -48,7 +48,7 @@ logging:
 
 # Application custom properties
 app:
-  base-url: ${APP_BASE_URL:http://localhost:8080}
+  base-url: ${APP_BASE_URL:http://localhost:8000}
   email:
     retry:
       max-attempts: ${EMAIL_RETRY_MAX_ATTEMPTS:3}
