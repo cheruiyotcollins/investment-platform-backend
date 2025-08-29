@@ -4,20 +4,20 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://ep-steep-boat-a2v508jg.eu-central-1.pg.koyeb.app:5432/koyebdb?sslmode=require
-    username: koyeb-adm
-    password: npg_vxiQ9bCs2LOE
+    url: ${DB_URL:jdbc:postgresql://ep-steep-boat-a2v508jg.eu-central-1.pg.koyeb.app:5432/koyebdb?sslmode=require}
+    username: ${DB_USERNAME:koyeb-adm}
+    password: ${DB_PASSWORD:npg_vxiQ9bCs2LOE}
     driver-class-name: org.postgresql.Driver
     hikari:
-      maximum-pool-size: 10
-      minimum-idle: 2
-      idle-timeout: 30000
-      max-lifetime: 1800000
-      connection-timeout: 30000
+      maximum-pool-size: ${DB_MAX_POOL_SIZE:10}
+      minimum-idle: ${DB_MIN_IDLE:2}
+      idle-timeout: ${DB_IDLE_TIMEOUT:30000}       # 30s
+      max-lifetime: ${DB_MAX_LIFETIME:1800000}     # 30m
+      connection-timeout: ${DB_CONNECTION_TIMEOUT:30000} # 30s
 
   jpa:
     hibernate:
-      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update} # update / validate / none
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}  # update / validate / none
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
@@ -35,7 +35,7 @@ spring:
 password:
   length: ${PASSWORD_LENGTH:8}
 
-# Logging - ENHANCED FOR DEBUGGING
+# Logging - fine-grained levels
 logging:
   level:
     root: INFO
@@ -55,8 +55,8 @@ app:
       delay-hours: ${EMAIL_RETRY_DELAY_HOURS:1}
   jwt:
     secret: ${JWT_SECRET:CvsHphcFevtdY3HnphT7gUvnIgDin5hlQG+9O1cCD7vhGEltf+QsEasz1n91kqFCf8vkB4RDnf5nAfblMR+CgA==}
-    token-validity: ${JWT_TOKEN_VALIDITY:3600000}             # 1 hour
-    refresh-token-validity: ${JWT_REFRESH_TOKEN_VALIDITY:2592000000} # 30 days
+    token-validity: ${JWT_TOKEN_VALIDITY:3600000}             # 1h
+    refresh-token-validity: ${JWT_REFRESH_TOKEN_VALIDITY:2592000000} # 30d
 
 # File storage
 file:
@@ -66,9 +66,9 @@ file:
 management:
   endpoints:
     web:
+      base-path: /actuator
       exposure:
         include: health,info,metrics
-      base-path: /actuator
   endpoint:
     health:
       show-details: always
