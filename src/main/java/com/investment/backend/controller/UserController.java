@@ -40,7 +40,7 @@ public class UserController {
     
     @Autowired
     private UserService userService;
-    
+
     @Autowired
     private InvestmentRoiScheduler investmentRoiScheduler;
     @Autowired
@@ -112,6 +112,7 @@ public class UserController {
 
         // Calculate the total value (principal + profit)
         BigDecimal totalValue = totalInvestment.add(totalProfit);
+        totalValue.add(user.getBalance());
 
         return ResponseEntity.ok(Map.of(
                 "user", user,
