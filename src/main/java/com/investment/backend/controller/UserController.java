@@ -6,6 +6,7 @@ import com.investment.backend.entity.DepositRecord;
 import com.investment.backend.entity.User;
 import com.investment.backend.service.CustomUserDetailsService;
 import com.investment.backend.service.DepositService;
+import com.investment.backend.service.InvestmentService;
 import com.investment.backend.service.impl.InvestmentRoiScheduler;
 import com.investment.backend.service.UserService;
 import jakarta.validation.Valid;
@@ -29,6 +30,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -41,6 +43,8 @@ public class UserController {
     
     @Autowired
     private InvestmentRoiScheduler investmentRoiScheduler;
+    @Autowired
+    private  InvestmentService service;
     @Autowired
     JwtTokenUtil jwtTokenUtil;
     @Autowired
@@ -101,12 +105,19 @@ public class UserController {
         }
 
         User user = userService.getUserById(userId);
-//        BigDecimal roi = investmentRoiScheduler.calculateInvestmentROI(user);
+
+        // Fetch the total investment and profit for the user
+        BigDecimal totalInvestment = service.getTotalInvestment(user);
+        BigDecimal totalProfit = service.getTotalProfit(user);
+
+        // Calculate the total value (principal + profit)
+        BigDecimal totalValue = totalInvestment.add(totalProfit);
 
         return ResponseEntity.ok(Map.of(
                 "user", user,
-                "roi", user.getRoi(),
-                "totalValue", user.getBalance().add(user.getRoi())
+                "totalInvestment", totalInvestment,
+                "totalProfit", totalProfit,
+                "totalValue", totalValue
         ));
     }
 

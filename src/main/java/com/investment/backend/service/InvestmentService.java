@@ -96,4 +96,13 @@ public class InvestmentService {
                 .durationDays(inv.getDurationDays())
                 .build();
     }
+    public BigDecimal getTotalInvestment(User user) {
+        BigDecimal totalAmount = investmentRepository.sumAmountByUser(user);
+        return totalAmount != null ? totalAmount : BigDecimal.ZERO;
+    }
+
+    public BigDecimal getTotalProfit(User user) {
+        BigDecimal totalProfit = investmentRepository.sumProfitByUser(user);
+        return totalProfit != null ? totalProfit : BigDecimal.ZERO;
+    }
 }
