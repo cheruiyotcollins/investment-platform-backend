@@ -276,8 +276,9 @@ public class UserController {
         // In a real app, these would be your platform's wallet addresses
         return ResponseEntity.ok(Map.of(
                 "btcAddress", "38n5Y6cepPWDrJxL66QTJ8H9SAQnRvTbRW",
-                "ethAddress", "0x402d702105a430436131815d7f42f1aa7a48b5f9",
-                "usdtAddress", "TAjBNdfX82ZukCyG8jiLo1JyP24xmGs9PK"
+                "ethAddress", "0xF8d75E54d0BdE7F7B836927e0Ff721f4F6b9DC66",
+                "usdtAddress", "TDSLa1vsJ5pPZyCnGajG2LGHJ4a3pRfvC7",
+                "usdcAddress","0xF8d75E54d0BdE7F7B836927e0Ff721f4F6b9DC66"
         ));
     }
 
