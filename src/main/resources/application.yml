@@ -1,13 +1,13 @@
 server:
-  port: ${PORT:8000}
+  port: ${PORT:9002}
   address: 0.0.0.0
 
 spring:
   datasource:
-    url: ${DB_URL:jdbc:postgresql://ep-steep-boat-a2v508jg.eu-central-1.pg.koyeb.app:5432/koyebdb?sslmode=require}
-    username: ${DB_USERNAME:koyeb-adm}
-    password: ${DB_PASSWORD:npg_vxiQ9bCs2LOE}
-    driver-class-name: org.postgresql.Driver
+    url: ${DB_URL:jdbc:mysql://localhost:3306/investment_schema?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
+    username: ${DB_USERNAME:collo}
+    password: ${DB_PASSWORD:Kipkirui92?}
+    driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       maximum-pool-size: ${DB_MAX_POOL_SIZE:10}
       minimum-idle: ${DB_MIN_IDLE:2}
@@ -20,16 +20,47 @@ spring:
       ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}  # update / validate / none
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+        dialect: org.hibernate.dialect.MySQLDialect
         jdbc:
           lob:
             non_contextual_creation: true
+        # MySQL specific properties
+        connection:
+          characterEncoding: utf8
+          useUnicode: true
     open-in-view: false
     show-sql: ${SPRING_JPA_SHOW_SQL:false}
 
   jackson:
     serialization:
       fail-on-empty-beans: false
+
+  # Mail configuration
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL_USERNAME:your-email@gmail.com}
+    password: ${EMAIL_PASSWORD:your-app-password}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+
+  # SQL initialization (optional - for initial data)
+  sql:
+    init:
+      mode: always
+      platform: mysql
+
+  task:
+    scheduling:
+          pool:
+            size: 2
 
 # Password policy
 password:
@@ -42,9 +73,8 @@ logging:
     org.springframework: DEBUG
     com.zaxxer.hikari: DEBUG
     com.investment: DEBUG
-    org.hibernate.SQL: DEBUG
+    org.hibernate.SQL: ${SPRING_JPA_SHOW_SQL:false}
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-    org.hibernate.orm.jdbc.bind: TRACE
 
 # Application custom properties
 app:
@@ -76,3 +106,27 @@ management:
         enabled: true
     shutdown:
       enabled: false
+
+# Cache configuration
+
+# Resilience4j configuration
+resilience4j:
+  retry:
+    instances:
+      emailRetry:
+        maxAttempts: 3
+        waitDuration: 500ms
+        retryExceptions:
+          - java.io.IOException
+          - org.springframework.web.client.ResourceAccessException
+        ignoreExceptions:
+          - java.lang.IllegalArgumentException
+  circuitbreaker:
+    instances:
+      emailCircuitBreaker:
+        registerHealthIndicator: true
+        slidingWindowSize: 100
+        failureRateThreshold: 50
+        waitDurationInOpenState: 1000ms
+        ringBufferSizeInClosedState: 100
+        ringBufferSizeInHalfOpenState: 10
