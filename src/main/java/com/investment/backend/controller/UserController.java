@@ -16,21 +16,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -164,15 +157,11 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
-    @PostMapping(value = "/deposit/{userId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping("/deposit/{userId}")
     public ResponseEntity<?> depositFunds(
             @PathVariable Long userId,
-            @RequestPart("userId") String formUserId,
-            @RequestPart("amount") String amount,
-            @RequestPart("currency") String currency,
-            @RequestPart("walletAddress") String walletAddress,
-            @RequestPart(value = "screenshot", required = false) MultipartFile screenshot,
-            @RequestPart(value = "network", required = false) String network,
+            @RequestParam("amount") String amount,
+            @RequestParam("currency") String currency,
             @RequestHeader("Authorization") String authHeader) {
 
         // Verify token and user
@@ -181,11 +170,6 @@ public class UserController {
         User user = userService.getUserById(userId);
         if (!user.getUsername().equals(username)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-
-        // Validate the form userId matches the path variable
-        if (!userId.toString().equals(formUserId)) {
-            return ResponseEntity.badRequest().body("User ID mismatch");
         }
 
         // Parse and validate amount
@@ -199,33 +183,17 @@ public class UserController {
             return ResponseEntity.badRequest().body("Invalid amount format");
         }
 
-        String screenshotPath = null;
-        if (screenshot != null && !screenshot.isEmpty()) {
-            try {
-                // Validate file type
-                if (!screenshot.getContentType().startsWith("image/")) {
-                    return ResponseEntity.badRequest().body("Only image files are allowed");
-                }
-
-                // Store the screenshot using DepositService
-                screenshotPath = depositService.storeFile(screenshot);
-            } catch (IOException e) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body("Failed to process screenshot");
-            }
-        }
-
         try {
             // Create and save deposit record
             DepositRecord record = new DepositRecord();
             record.setUserId(userId);
             record.setAmount(depositAmount);
             record.setCurrency(currency);
-            record.setWalletAddress(walletAddress);
-            record.setNetwork(network);
-            record.setScreenshotPath(screenshotPath);
             record.setStatus("PENDING_VERIFICATION");
             record.setCreatedAt(LocalDateTime.now());
+
+            // Add logging to see what's being saved
+            System.out.println("Saving deposit record: " + record.toString());
 
             DepositRecord savedRecord = depositService.saveDepositRecord(record);
 
@@ -236,15 +204,8 @@ public class UserController {
                     "depositId", savedRecord.getId()
             ));
         } catch (Exception e) {
-            // Clean up stored screenshot if deposit failed
-            if (screenshotPath != null) {
-                try {
-                    Path fileToDelete = depositService.loadFile(screenshotPath);
-                    Files.deleteIfExists(fileToDelete);
-                } catch (IOException ex) {
-                }
-            }
-
+            // Log the actual exception for debugging
+            e.printStackTrace(); // This will show the actual error in logs
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Deposit processing failed. Please try again.");
         }
