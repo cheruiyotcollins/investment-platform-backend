@@ -30,14 +30,8 @@ public class DepositRecord {
     @Column(nullable = false, length = 10)
     private String currency;
 
-    @Column(name = "wallet_address", nullable = false, length = 100)
-    private String walletAddress;
-
     @Column(length = 20)
     private String network; // For USDT (ERC20/TRC20)
-
-    @Column(name = "screenshot_path", length = 255)
-    private String screenshotPath;
 
     @Column(nullable = false, length = 20)
     private String status = "PENDING_VERIFICATION"; // PENDING_VERIFICATION, COMPLETED, REJECTED
@@ -66,7 +60,6 @@ public class DepositRecord {
                 ", userId=" + userId +
                 ", amount=" + amount +
                 ", currency='" + currency + '\'' +
-                ", walletAddress='" + walletAddress + '\'' +
                 ", network='" + network + '\'' +
                 ", status='" + status + '\'' +
                 ", createdAt=" + createdAt +
