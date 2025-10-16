@@ -14,13 +14,7 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins(
-                                "https://www.cryptoinvestment.live",
-                                "https://api.cryptoinvestment.live", // fixed typo: was api/cryptoinvestment.live
-                                "https://crypto-venture-trust.netlify.app",
-                                "http://localhost:3000",
-                                "https://likely-rhianon-cryptoinvest-ba86ef09.koyeb.app/" // add Koyeb domain
-                        )
+                        .allowedOriginPatterns("*") // More flexible
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);
