@@ -317,5 +317,40 @@ public class UserController {
         depositService.disapproveDeposit(id, remarksRequest != null ? remarksRequest.getRemarks() : null);
         return ResponseEntity.ok(Map.of("message", "Deposit disapproved successfully"));
     }
+    @PostMapping("/{userId}/withdraw")
+    public ResponseEntity<?> withdrawFunds(
+            @PathVariable Long userId,
+            @Valid @RequestBody WithdrawalRequestDTO withdrawalRequest,
+            @RequestHeader("Authorization") String authHeader) {
+
+        // Verify token and user
+        String token = authHeader.substring(7);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        User user = userService.getUserById(userId);
+        if (!user.getUsername().equals(username)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        // Validate wallet address
+        if (!validateWalletAddress(withdrawalRequest.getCurrency(), withdrawalRequest.getWalletAddress())) {
+            return ResponseEntity.badRequest().body("Invalid wallet address for the specified currency");
+        }
+
+        // Validate amount
+        if (withdrawalRequest.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
+            return ResponseEntity.badRequest().body("Amount must be positive");
+        }
+
+        try {
+            // Process withdrawal (you'll need to implement this service method)
+            WithdrawalResponseDTO response = userService.processWithdrawal(userId, withdrawalRequest);
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Withdrawal processing failed: " + e.getMessage());
+        }
+    }
 
 }
