@@ -27,6 +27,7 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
+    @Column(name = "balance", precision = 19, scale = 8, nullable = false)
     private BigDecimal balance = BigDecimal.ZERO;
     private BigDecimal roi = BigDecimal.ZERO;
     private LocalDateTime joinedAt = LocalDateTime.now();
