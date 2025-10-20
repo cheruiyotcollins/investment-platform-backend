@@ -342,7 +342,6 @@ public class UserController {
         }
 
         try {
-            // Process withdrawal (you'll need to implement this service method)
             WithdrawalResponseDTO response = userService.processWithdrawal(userId, withdrawalRequest);
 
             return ResponseEntity.ok(response);
