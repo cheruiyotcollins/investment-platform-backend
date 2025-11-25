@@ -8,7 +8,7 @@ pipeline {
 
     environment {
         DOCKERHUB = credentials('dockerhub-creds')
-        IMAGE_NAME = "cheruiyotcollins/investment-backend"
+        IMAGE_NAME = "kelvincollins86/investment-backend"
     }
 
     stages {
@@ -57,10 +57,10 @@ pipeline {
 
     post {
         success {
-            echo '🚀 Pipeline completed and Docker image pushed to Docker Hub!'
+            echo '🚀 Pipeline completed and image pushed to Docker Hub: kelvincollins86/investment-backend'
         }
         failure {
-            echo '❌ Pipeline failed. Please check logs.'
+            echo '❌ Pipeline failed.'
         }
     }
 }
