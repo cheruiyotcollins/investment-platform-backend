@@ -14,7 +14,7 @@ WORKDIR /app
 COPY --from=build /app/target/backend-0.0.1-SNAPSHOT.jar app.jar
 
 # Expose a port (for documentation, not binding)
-EXPOSE 8000
+EXPOSE 9002
 
 ENV TZ=UTC
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone

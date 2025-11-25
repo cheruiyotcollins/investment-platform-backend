@@ -8,7 +8,7 @@ public enum InvestmentPlan {
     VOYAGER(2, "Voyager Plan", 100, 249, 30, 5.0),
     PIONEER(3, "Pioneer Plan", 250, 499, 45, 7.5),
     CATALYST(4, "Catalyst Plan", 500, 999, 60, 10.0),
-    LEGEND(5, "Legend Plan", 1000, 99999, 90, 12.5);
+    LEGEND(5, "Legend Plan", 1000, 99999, 90, 15);
 
     public final int id;
     public final String name;

@@ -1,5 +1,7 @@
 package com.investment.backend.service;
 
+import com.investment.backend.dto.WithdrawalRequestDTO;
+import com.investment.backend.dto.WithdrawalResponseDTO;
 import com.investment.backend.entity.User;
 
 import java.math.BigDecimal;
@@ -15,5 +17,6 @@ public interface UserService {
     void processReferral(User user);
     List<User> findAll();
     User saveUser(User user);
-    public void processDeposit(Long userId, BigDecimal amount, String currency);
+    void processDeposit(Long userId, BigDecimal amount, String currency);
+    WithdrawalResponseDTO processWithdrawal(Long userId, WithdrawalRequestDTO withdrawalRequest);
 }
