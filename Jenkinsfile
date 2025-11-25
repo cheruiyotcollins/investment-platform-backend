@@ -6,12 +6,25 @@ pipeline {
         jdk 'java-21'
     }
 
+    environment {
+        DOCKERHUB = credentials('dockerhub-creds')
+        IMAGE_NAME = "cheruiyotcollins/investment-backend"
+    }
+
     stages {
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
         stage('Build') {
             steps {
                 sh 'mvn -B -DskipTests clean package'
             }
         }
+
         stage('Test') {
             steps {
                 sh 'mvn test'
@@ -22,14 +35,32 @@ pipeline {
                 }
             }
         }
+
+        stage('Docker Build') {
+            steps {
+                sh "docker build -t ${IMAGE_NAME}:latest ."
+            }
+        }
+
+        stage('Docker Login') {
+            steps {
+                sh 'echo $DOCKERHUB_PSW | docker login -u $DOCKERHUB_USR --password-stdin'
+            }
+        }
+
+        stage('Docker Push') {
+            steps {
+                sh "docker push ${IMAGE_NAME}:latest"
+            }
+        }
     }
 
     post {
         success {
-            echo 'Pipeline completed successfully!'
+            echo '🚀 Pipeline completed and Docker image pushed to Docker Hub!'
         }
         failure {
-            echo 'Pipeline failed!'
+            echo '❌ Pipeline failed. Please check logs.'
         }
     }
 }
