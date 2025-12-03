@@ -1,48 +1,49 @@
 server:
-  port: ${PORT:-9002}
+  port: 9002
   address: 0.0.0.0
 
 spring:
+  # --- Database Configuration ---
   datasource:
-    url: ${DB_URL:-jdbc:postgresql://localhost:5432/investment_schema?sslmode=disable&stringtype=unspecified}
-    username: ${DB_USERNAME:-collo}
-    password: ${DB_PASSWORD:-Kipkirui92?}
+    url: jdbc:postgresql://localhost:5432/investment_schema?sslmode=disable&stringtype=unspecified
+    # Use the 'postgres' user (ensure you have set a password for it) or a dedicated user
+    username: postgres
+    password: Kipkirui92?
     driver-class-name: org.postgresql.Driver
     hikari:
-      maximum-pool-size: ${DB_MAX_POOL_SIZE:-10}
-      minimum-idle: ${DB_MIN_IDLE:-2}
-      idle-timeout: ${DB_IDLE_TIMEOUT:-30000}       # 30s
-      max-lifetime: ${DB_MAX_LIFETIME:-1800000}     # 30m
-      connection-timeout: ${DB_CONNECTION_TIMEOUT:-30000} # 30s
+      maximum-pool-size: 10
+      minimum-idle: 2
+      idle-timeout: 30000       # 30s
+      max-lifetime: 1800000     # 30m
+      connection-timeout: 30000 # 30s
 
+  # --- JPA/Hibernate Configuration ---
   jpa:
-    hibernate:
-      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:-update}  # update / validate / none
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         jdbc:
           lob:
             non_contextual_creation: true
-        # PostgreSQL specific properties
         default_schema: public
-        # Connection properties
-        connection:
-          charSet: UTF-8
-        # For better PostgreSQL performance
+        format_sql: true
+        # 👇 ADDED: Hibernate DDL configuration
+        hbm2ddl:
+          auto: update  # <-- This enables automatic schema updates on startup
+
+        # 👇 FIX for the "JDBC transaction marked for rollback-only" error during startup
         temp:
           use_jdbc_metadata_defaults: false
-        format_sql: true
-        generate_statistics: true
     open-in-view: false
-    show-sql: ${SPRING_JPA_SHOW_SQL:-true}  # Changed to true for debugging
+    show-sql: true
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
+  # --- Jackson Configuration (Serialization/JSON) ---
   jackson:
     serialization:
       fail-on-empty-beans: false
 
-  # Mail configuration
+  # --- Mail Configuration ---
   mail:
     host: smtp.gmail.com
     port: 587
@@ -58,54 +59,29 @@ spring:
           timeout: 5000
           writetimeout: 5000
 
-  # SQL initialization (optional - for initial data)
-  sql:
-    init:
-      mode: always
-      platform: postgresql
-
+  # --- Task Scheduling Configuration ---
   task:
     scheduling:
       pool:
         size: 2
 
-# Password policy
-password:
-  length: ${PASSWORD_LENGTH:-8}
-
-# Logging - fine-grained levels
-logging:
-  level:
-    root: INFO
-    org.springframework: DEBUG
-    org.springframework.jdbc: DEBUG
-    org.springframework.transaction: TRACE
-    org.springframework.orm.jpa: DEBUG
-    com.zaxxer.hikari: DEBUG
-    com.investment: DEBUG
-    org.hibernate: DEBUG
-    org.hibernate.SQL: DEBUG  # Changed from variable to direct value
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-    org.hibernate.tool.schema: TRACE
-    org.hibernate.tool.schema.internal: TRACE
-
-# Application custom properties
+# --- Application Custom Properties ---
 app:
-  base-url: ${APP_BASE_URL:-http://localhost:8000}
+  base-url: http://localhost:8000
   email:
     retry:
-      max-attempts: ${EMAIL_RETRY_MAX_ATTEMPTS:-3}
-      delay-hours: ${EMAIL_RETRY_DELAY_HOURS:-1}
+      max-attempts: 3
+      delay-hours: 1
   jwt:
-    secret: ${JWT_SECRET:-CvsHphcFevtdY3HnphT7gUvnIgDin5hlQG+9O1cCD7vhGEltf+QsEasz1n91kqFCf8vkB4RDnf5nAfblMR+CgA==}
-    token-validity: ${JWT_TOKEN_VALIDITY:-3600000}             # 1h
-    refresh-token-validity: ${JWT_REFRESH_TOKEN_VALIDITY:-2592000000} # 30d
+    # It's better to store secrets like this outside of the config file (e.g., environment variables)
+    secret: CvsHphcFevtdY3HnphT7gUvnIgDin5hlQG+9O1cCD7vhGEltf+QsEasz1n91kqFCf8vkB4RDnf5nAfblMR+CgA==
+    token-validity: 3600000             # 1h
+    refresh-token-validity: 2592000000  # 30d
 
-# File storage
 file:
-  upload-dir: ${FILE_UPLOAD_DIR:-uploads/deposit-screenshots}
+  upload-dir: uploads/deposit-screenshots
 
-# Actuator for health checks
+# --- Spring Boot Actuator Configuration ---
 management:
   endpoints:
     web:
@@ -120,9 +96,7 @@ management:
     shutdown:
       enabled: false
 
-# Cache configuration
-
-# Resilience4j configuration
+# --- Resilience4j Configuration (Circuit Breaker and Retry) ---
 resilience4j:
   retry:
     instances:
@@ -143,3 +117,18 @@ resilience4j:
         waitDurationInOpenState: 1000ms
         ringBufferSizeInClosedState: 100
         ringBufferSizeInHalfOpenState: 10
+
+# --- Logging Configuration ---
+logging:
+  level:
+    root: INFO
+    org.springframework.jdbc: DEBUG
+    org.springframework.transaction: TRACE
+    org.springframework.orm.jpa: DEBUG
+    com.zaxxer.hikari: DEBUG
+    com.investment: DEBUG
+    org.hibernate: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.hibernate.tool.schema: TRACE
+    org.hibernate.tool.schema.internal: TRACE
