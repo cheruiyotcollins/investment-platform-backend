@@ -58,7 +58,7 @@ public class InvestmentService {
 
         Investment inv = Investment.builder()
                 .user(user)
-                .planId(plan.id)
+                .planId(Integer.valueOf(plan.id))
                 .planName(plan.name)
                 .amount(amount)
                 .asset(req.getAsset())
