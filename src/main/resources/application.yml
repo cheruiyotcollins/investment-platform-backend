@@ -1,35 +1,42 @@
 server:
-  port: ${PORT:9002}
+  port: ${PORT:-9002}
   address: 0.0.0.0
 
 spring:
   datasource:
-    url: ${DB_URL:jdbc:mysql://localhost:3306/investment_schema?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
-    username: ${DB_USERNAME:collo}
-    password: ${DB_PASSWORD:Kipkirui92?}
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DB_URL:-jdbc:postgresql://localhost:5432/investment_schema?sslmode=disable&stringtype=unspecified}
+    username: ${DB_USERNAME:-collo}
+    password: ${DB_PASSWORD:-Kipkirui92?}
+    driver-class-name: org.postgresql.Driver
     hikari:
-      maximum-pool-size: ${DB_MAX_POOL_SIZE:10}
-      minimum-idle: ${DB_MIN_IDLE:2}
-      idle-timeout: ${DB_IDLE_TIMEOUT:30000}       # 30s
-      max-lifetime: ${DB_MAX_LIFETIME:1800000}     # 30m
-      connection-timeout: ${DB_CONNECTION_TIMEOUT:30000} # 30s
+      maximum-pool-size: ${DB_MAX_POOL_SIZE:-10}
+      minimum-idle: ${DB_MIN_IDLE:-2}
+      idle-timeout: ${DB_IDLE_TIMEOUT:-30000}       # 30s
+      max-lifetime: ${DB_MAX_LIFETIME:-1800000}     # 30m
+      connection-timeout: ${DB_CONNECTION_TIMEOUT:-30000} # 30s
 
   jpa:
     hibernate:
-      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}  # update / validate / none
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:-update}  # update / validate / none
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect
+        dialect: org.hibernate.dialect.PostgreSQLDialect
         jdbc:
           lob:
             non_contextual_creation: true
-        # MySQL specific properties
+        # PostgreSQL specific properties
+        default_schema: public
+        # Connection properties
         connection:
-          characterEncoding: utf8
-          useUnicode: true
+          charSet: UTF-8
+        # For better PostgreSQL performance
+        temp:
+          use_jdbc_metadata_defaults: false
+        format_sql: true
+        generate_statistics: true
     open-in-view: false
-    show-sql: ${SPRING_JPA_SHOW_SQL:false}
+    show-sql: ${SPRING_JPA_SHOW_SQL:-true}  # Changed to true for debugging
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
 
   jackson:
     serialization:
@@ -39,8 +46,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ${EMAIL_USERNAME:your-email@gmail.com}
-    password: ${EMAIL_PASSWORD:your-app-password}
+    username: ${EMAIL_USERNAME:-your-email@gmail.com}
+    password: ${EMAIL_PASSWORD:-your-app-password}
     properties:
       mail:
         smtp:
@@ -55,42 +62,48 @@ spring:
   sql:
     init:
       mode: always
-      platform: mysql
+      platform: postgresql
 
   task:
     scheduling:
-          pool:
-            size: 2
+      pool:
+        size: 2
 
 # Password policy
 password:
-  length: ${PASSWORD_LENGTH:8}
+  length: ${PASSWORD_LENGTH:-8}
 
 # Logging - fine-grained levels
 logging:
   level:
     root: INFO
     org.springframework: DEBUG
+    org.springframework.jdbc: DEBUG
+    org.springframework.transaction: TRACE
+    org.springframework.orm.jpa: DEBUG
     com.zaxxer.hikari: DEBUG
     com.investment: DEBUG
-    org.hibernate.SQL: ${SPRING_JPA_SHOW_SQL:false}
+    org.hibernate: DEBUG
+    org.hibernate.SQL: DEBUG  # Changed from variable to direct value
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.hibernate.tool.schema: TRACE
+    org.hibernate.tool.schema.internal: TRACE
 
 # Application custom properties
 app:
-  base-url: ${APP_BASE_URL:http://localhost:8000}
+  base-url: ${APP_BASE_URL:-http://localhost:8000}
   email:
     retry:
-      max-attempts: ${EMAIL_RETRY_MAX_ATTEMPTS:3}
-      delay-hours: ${EMAIL_RETRY_DELAY_HOURS:1}
+      max-attempts: ${EMAIL_RETRY_MAX_ATTEMPTS:-3}
+      delay-hours: ${EMAIL_RETRY_DELAY_HOURS:-1}
   jwt:
-    secret: ${JWT_SECRET:CvsHphcFevtdY3HnphT7gUvnIgDin5hlQG+9O1cCD7vhGEltf+QsEasz1n91kqFCf8vkB4RDnf5nAfblMR+CgA==}
-    token-validity: ${JWT_TOKEN_VALIDITY:3600000}             # 1h
-    refresh-token-validity: ${JWT_REFRESH_TOKEN_VALIDITY:2592000000} # 30d
+    secret: ${JWT_SECRET:-CvsHphcFevtdY3HnphT7gUvnIgDin5hlQG+9O1cCD7vhGEltf+QsEasz1n91kqFCf8vkB4RDnf5nAfblMR+CgA==}
+    token-validity: ${JWT_TOKEN_VALIDITY:-3600000}             # 1h
+    refresh-token-validity: ${JWT_REFRESH_TOKEN_VALIDITY:-2592000000} # 30d
 
 # File storage
 file:
-  upload-dir: ${FILE_UPLOAD_DIR:uploads/deposit-screenshots}
+  upload-dir: ${FILE_UPLOAD_DIR:-uploads/deposit-screenshots}
 
 # Actuator for health checks
 management:
