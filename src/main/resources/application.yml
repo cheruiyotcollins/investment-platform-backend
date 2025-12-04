@@ -1,23 +1,20 @@
 server:
-  port: 9002
-  address: 0.0.0.0
+  port: ${SERVER_PORT:9002}
+  address: ${SERVER_ADDRESS:0.0.0.0}
 
 spring:
-  # --- Database Configuration ---
   datasource:
-    url: jdbc:postgresql://localhost:5432/investment_schema?sslmode=disable&stringtype=unspecified
-    # Use the 'postgres' user (ensure you have set a password for it) or a dedicated user
-    username: postgres
-    password: Kipkirui92?
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/investment_schema}
+    username: ${SPRING_DATASOURCE_USERNAME:collo}
+    password: ${SPRING_DATASOURCE_PASSWORD:}
     driver-class-name: org.postgresql.Driver
     hikari:
-      maximum-pool-size: 10
-      minimum-idle: 2
-      idle-timeout: 30000       # 30s
-      max-lifetime: 1800000     # 30m
-      connection-timeout: 30000 # 30s
+      maximum-pool-size: ${DB_MAX_POOL_SIZE:10}
+      minimum-idle: ${DB_MIN_IDLE:2}
+      idle-timeout: ${DB_IDLE_TIMEOUT:30000}
+      max-lifetime: ${DB_MAX_LIFETIME:1800000}
+      connection-timeout: ${DB_CONNECTION_TIMEOUT:30000}
 
-  # --- JPA/Hibernate Configuration ---
   jpa:
     properties:
       hibernate:
@@ -27,28 +24,23 @@ spring:
             non_contextual_creation: true
         default_schema: public
         format_sql: true
-        # 👇 ADDED: Hibernate DDL configuration
         hbm2ddl:
-          auto: update  # <-- This enables automatic schema updates on startup
-
-        # 👇 FIX for the "JDBC transaction marked for rollback-only" error during startup
+          auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:none}
         temp:
           use_jdbc_metadata_defaults: false
     open-in-view: false
-    show-sql: true
+    show-sql: ${SPRING_JPA_SHOW_SQL:false}
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
-  # --- Jackson Configuration (Serialization/JSON) ---
   jackson:
     serialization:
       fail-on-empty-beans: false
 
-  # --- Mail Configuration ---
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ${EMAIL_USERNAME:-your-email@gmail.com}
-    password: ${EMAIL_PASSWORD:-your-app-password}
+    username: ${EMAIL_USERNAME:}
+    password: ${EMAIL_PASSWORD:}
     properties:
       mail:
         smtp:
@@ -59,29 +51,25 @@ spring:
           timeout: 5000
           writetimeout: 5000
 
-  # --- Task Scheduling Configuration ---
   task:
     scheduling:
       pool:
         size: 2
 
-# --- Application Custom Properties ---
 app:
-  base-url: http://localhost:8000
+  base-url: ${APP_BASE_URL:http://localhost:9002}
   email:
     retry:
-      max-attempts: 3
-      delay-hours: 1
+      max-attempts: ${EMAIL_RETRY_MAX_ATTEMPTS:3}
+      delay-hours: ${EMAIL_RETRY_DELAY_HOURS:1}
   jwt:
-    # It's better to store secrets like this outside of the config file (e.g., environment variables)
-    secret: CvsHphcFevtdY3HnphT7gUvnIgDin5hlQG+9O1cCD7vhGEltf+QsEasz1n91kqFCf8vkB4RDnf5nAfblMR+CgA==
-    token-validity: 3600000             # 1h
-    refresh-token-validity: 2592000000  # 30d
+    secret: ${JWT_SECRET:}
+    token-validity: ${JWT_TOKEN_VALIDITY:3600000}
+    refresh-token-validity: ${JWT_REFRESH_TOKEN_VALIDITY:2592000000}
 
 file:
-  upload-dir: uploads/deposit-screenshots
+  upload-dir: ${FILE_UPLOAD_DIR:uploads/deposit-screenshots}
 
-# --- Spring Boot Actuator Configuration ---
 management:
   endpoints:
     web:
@@ -96,7 +84,6 @@ management:
     shutdown:
       enabled: false
 
-# --- Resilience4j Configuration (Circuit Breaker and Retry) ---
 resilience4j:
   retry:
     instances:
@@ -118,7 +105,6 @@ resilience4j:
         ringBufferSizeInClosedState: 100
         ringBufferSizeInHalfOpenState: 10
 
-# --- Logging Configuration ---
 logging:
   level:
     root: INFO
