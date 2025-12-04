@@ -1,6 +1,7 @@
 package com.investment.backend.security;
 
 import com.investment.backend.config.JwtAuthenticationFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -19,6 +20,8 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+    @Autowired
+    private JwtAuthenticationFilter jwtAuthenticationFilter; // This is now autowired
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -33,28 +36,45 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // Use the autowired instance directly
 
         return http.build();
-    }
-
-    @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter();
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowedOriginPatterns(Arrays.asList(
+        // Use specific origins for local development
+        config.setAllowedOrigins(Arrays.asList(
+                "http://localhost:3000",  // React frontend
+                "http://127.0.0.1:3000",  // React frontend with IP
                 "https://crypto-venture-trust.netlify.app",
-                "https://api.cryptoinvestment.live",
-                "http://localhost:*"
+                "https://api.cryptoinvestment.live"
         ));
+
+        // OR if you want to keep patterns for flexibility:
+        // config.setAllowedOriginPatterns(Arrays.asList(
+        //     "https://crypto-venture-trust.netlify.app",
+        //     "https://api.cryptoinvestment.live",
+        //     "http://localhost:*"
+        // ));
+
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
-        config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept"));
-        config.setExposedHeaders(List.of("Authorization"));
+        config.setAllowedHeaders(Arrays.asList(
+                "Authorization",
+                "Content-Type",
+                "Accept",
+                "X-Requested-With",
+                "Origin",
+                "Access-Control-Request-Method",
+                "Access-Control-Request-Headers"
+        ));
+        config.setExposedHeaders(Arrays.asList(
+                "Authorization",
+                "Access-Control-Allow-Origin",
+                "Access-Control-Allow-Credentials"
+        ));
         config.setAllowCredentials(true);
         config.setMaxAge(3600L);
 
